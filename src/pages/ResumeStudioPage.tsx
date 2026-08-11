@@ -196,7 +196,7 @@ export const ResumeStudioPage: React.FC = () => {
               <span>{currentSchema.name}</span>
               <span>•</span>
               <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> ATS Score {currentSchema.atsScore}%
+                <ShieldCheck className="w-3.5 h-3.5" /> ATS Score {(currentSchema as any).atsScoreTarget || (currentSchema as any).atsScore || 95}%
               </span>
             </div>
           </div>
