@@ -23,6 +23,8 @@ import { downloadResumePdf, downloadResumeFile } from '../services/pdfExportServ
 import { AiTemplateGeneratorModal } from '../components/resume/AiTemplateGeneratorModal';
 import { ResumeData, TemplateSchema } from '../types/resume';
 import { LAUNCH_TEMPLATES } from '../constants/templates';
+import { getParametricTemplateById } from '../engine/templateEngine';
+import { SchemaResumeRenderer } from '../components/resume/SchemaResumeRenderer';
 import { ResumeRenderer } from '../components/resume/ResumeRenderer';
 import { OnboardingWizard } from '../components/resume/OnboardingWizard';
 import { VersionControlModal } from '../components/resume/VersionControlModal';
@@ -163,7 +165,9 @@ export const ResumeStudioPage: React.FC = () => {
   if (!resumeData) return null;
 
   const currentSchema =
-    LAUNCH_TEMPLATES.find((t) => t.templateId === resumeData.templateId) || LAUNCH_TEMPLATES[0];
+    getParametricTemplateById(resumeData.templateId) ||
+    LAUNCH_TEMPLATES.find((t) => t.templateId === resumeData.templateId) ||
+    LAUNCH_TEMPLATES[0];
 
   return (
     <div className="h-[calc(100vh-5rem)] flex flex-col -m-4 sm:-m-6 lg:-m-8">
@@ -606,7 +610,7 @@ export const ResumeStudioPage: React.FC = () => {
         {/* Right Side Live WYSIWYG Preview Container */}
         <div className="flex-1 bg-slate-950/80 overflow-auto p-8 flex justify-center items-start relative">
           <div className="shadow-2xl my-auto">
-            <ResumeRenderer data={resumeData} schema={currentSchema} scale={zoomScale} />
+            <SchemaResumeRenderer data={resumeData} schema={currentSchema} scale={zoomScale} />
           </div>
         </div>
       </div>
