@@ -16,6 +16,9 @@ export const DASHBOARD_NAV_ITEMS: NavItem[] = [
   { label: 'Resume Studio', path: '/dashboard/builder', icon: 'FileText' },
   { label: 'Template Gallery', path: '/dashboard/templates', icon: 'Layout' },
   { label: 'ATS Checker', path: '/dashboard/ats-checker', icon: 'CheckCircle2' },
+  { label: 'Job Fit Studio', path: '/dashboard/job-fit', icon: 'Wand2' },
+  { label: 'LinkedIn Studio', path: '/dashboard/linkedin', icon: 'Share2' },
+  { label: 'Interview Coach', path: '/dashboard/interview-coach', icon: 'MessageSquare' },
   { label: 'Domain AI Generator', path: '/dashboard/cover-letter', icon: 'Sparkles' },
   { label: 'Profile Settings', path: '/profile', icon: 'User' },
 ];
@@ -98,13 +101,5 @@ export const FAQ_LIST: FAQItem[] = [
   {
     question: 'Is my personal career data safe?',
     answer: 'Yes, absolutely. We enforce strict data privacy and store all data securely on Firebase Firestore with encrypted connections.',
-  },
-  {
-    question: 'Can I export my resume in multiple formats?',
-    answer: 'Yes, you can export your completed resume directly as high-resolution PDF or editable text formats.',
-  },
-  {
-    question: 'Is there a free trial or free tier?',
-    answer: 'Yes! Every new user gets full access to initial resume building and ATS checks during Phase 1 onboarding.',
   },
 ];

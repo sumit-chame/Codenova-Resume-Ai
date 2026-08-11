@@ -20,6 +20,9 @@ import { MockInterviewPage } from '../pages/MockInterviewPage';
 import { SkillGapPage } from '../pages/SkillGapPage';
 import { PortfolioGeneratorPage } from '../pages/PortfolioGeneratorPage';
 import { ReferralGeneratorPage } from '../pages/ReferralGeneratorPage';
+import { JobFitPage } from '../pages/JobFitPage';
+import { LinkedInStudioPage } from '../pages/LinkedInStudioPage';
+import { InterviewCoachPage } from '../pages/InterviewCoachPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 
 import { ProtectedRoute } from './ProtectedRoute';
@@ -82,6 +85,9 @@ export const AppRoutes: React.FC = () => {
         <Route path="/dashboard/builder" element={<ResumeStudioPage />} />
         <Route path="/dashboard/builder/:id" element={<ResumeStudioPage />} />
         <Route path="/dashboard/ats-checker" element={<AtsLabPage />} />
+        <Route path="/dashboard/job-fit" element={<JobFitPage />} />
+        <Route path="/dashboard/linkedin" element={<LinkedInStudioPage />} />
+        <Route path="/dashboard/interview-coach" element={<InterviewCoachPage />} />
         <Route path="/dashboard/cover-letter" element={<CoverLetterPage />} />
         <Route path="/dashboard/tracker" element={<ApplicationTrackerPage />} />
         <Route path="/dashboard/mock-interview" element={<MockInterviewPage />} />
