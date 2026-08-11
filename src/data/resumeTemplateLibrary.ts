@@ -2492,3 +2492,6 @@ export function validateTemplateLibrary(): { isValid: boolean; errors: string[];
     }
   };
 }
+
+export { CATALOG_500 } from '../engine/templateEngine';
+
