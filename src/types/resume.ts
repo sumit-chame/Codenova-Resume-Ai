@@ -1,3 +1,5 @@
+import { TemplateLayout, TemplateCategory, TemplateDensity, ResumeSectionKey, ResumeTemplateSchema } from '../data/resumeTemplateLibrary';
+
 export interface PersonalInfo {
   fullName: string;
   email: string;
@@ -91,7 +93,7 @@ export interface ResumeData {
 }
 
 export interface TemplateTheme {
-  fontFamily: 'Inter' | 'Plus Jakarta Sans' | 'Roboto' | 'Georgia' | 'Merriweather';
+  fontFamily: string;
   accentColor: string;
   spacingDensity: 'compact' | 'comfortable' | 'spacious';
 }
@@ -100,10 +102,12 @@ export interface TemplateSchema {
   templateId: string;
   name: string;
   description: string;
-  category: 'Tech' | 'Executive' | 'Creative' | 'Student' | 'Academic' | 'Minimal';
+  category: string;
   atsScore: number;
-  layout: 'single-column' | 'two-column-left' | 'two-column-right' | 'header-banner';
+  layout: string;
   defaultSectionOrder: string[];
   defaultTheme: TemplateTheme;
   recommendedRoles: string[];
 }
+
+export type { TemplateLayout, TemplateCategory, TemplateDensity, ResumeSectionKey, ResumeTemplateSchema };

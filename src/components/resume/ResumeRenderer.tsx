@@ -22,18 +22,21 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
   const density = theme?.spacingDensity || schema.defaultTheme.spacingDensity;
 
   const densityClasses: Record<string, { padding: string; space: string }> = {
-    compact: { padding: 'p-6', space: 'space-y-3' },
+    compact: { padding: 'p-5', space: 'space-y-2.5' },
     comfortable: { padding: 'p-8', space: 'space-y-5' },
     spacious: { padding: 'p-10', space: 'space-y-7' },
+    airy: { padding: 'p-10', space: 'space-y-7' },
+    'very-compact': { padding: 'p-4', space: 'space-y-2' },
   };
 
   const selectedDensity = densityClasses[density] || densityClasses.comfortable;
   const sectionOrder = data.sectionOrder || schema.defaultSectionOrder;
 
-  // Render individual section block
+  // Helper to render individual section blocks
   const renderSection = (sectionKey: string) => {
     switch (sectionKey) {
       case 'summary':
+      case 'objective':
         if (!personalInfo.summary) return null;
         return (
           <div key="summary" className="space-y-1.5">
@@ -87,6 +90,7 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
         );
 
       case 'education':
+      case 'academic-cv':
         if (!education || education.length === 0) return null;
         return (
           <div key="education" className="space-y-3">
@@ -94,7 +98,7 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
               className="text-xs font-bold uppercase tracking-wider border-b pb-1 mb-2"
               style={{ color: accentColor, borderColor: `${accentColor}40` }}
             >
-              Education
+              Education & Academic Credentials
             </h3>
             <div className="space-y-2.5">
               {education.map((edu) => (
@@ -124,7 +128,7 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
               className="text-xs font-bold uppercase tracking-wider border-b pb-1 mb-2"
               style={{ color: accentColor, borderColor: `${accentColor}40` }}
             >
-              Technical Projects
+              Key Projects
             </h3>
             <div className="space-y-2.5">
               {projects.map((proj) => (
@@ -154,6 +158,7 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
         );
 
       case 'skills':
+      case 'technical-skills':
         if (!skillCategories || skillCategories.length === 0) return null;
         return (
           <div key="skills" className="space-y-2">
@@ -179,6 +184,9 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
         );
 
       case 'certifications':
+      case 'awards':
+      case 'publications':
+      case 'research':
         if (!certifications || certifications.length === 0) return null;
         return (
           <div key="certifications" className="space-y-2">
@@ -206,11 +214,24 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
     }
   };
 
-  // Two-Column Sidebar Layout Variant
-  if (schema.layout === 'two-column-left' || schema.layout === 'two-column-right') {
+  // Two-Column Sidebar Layout Variants
+  const isSidebarLayout =
+    schema.layout === 'two-column-left' ||
+    schema.layout === 'two-column-right' ||
+    schema.layout === 'two-column' ||
+    schema.layout === 'two-column-sidebar' ||
+    schema.layout === 'sidebar-left' ||
+    schema.layout === 'sidebar-right';
+
+  if (isSidebarLayout) {
+    const isRight = schema.layout === 'sidebar-right' || schema.layout === 'two-column-right';
     return (
       <div
-        className={cn('print-container bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xl rounded-sm overflow-hidden border border-slate-200 dark:border-slate-800 transition-transform duration-200 flex min-h-[297mm]', className)}
+        className={cn(
+          'print-container bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xl rounded-sm overflow-hidden border border-slate-200 dark:border-slate-800 transition-transform duration-200 flex min-h-[297mm]',
+          isRight ? 'flex-row-reverse' : 'flex-row',
+          className
+        )}
         style={{
           fontFamily: fontFamily || 'Inter, sans-serif',
           transform: `scale(${scale})`,
@@ -218,7 +239,7 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
           width: '210mm',
         }}
       >
-        {/* Left Sidebar Panel */}
+        {/* Sidebar Panel */}
         <div className="w-[72mm] bg-slate-100 dark:bg-slate-800/80 p-6 space-y-6 shrink-0 border-r border-slate-200 dark:border-slate-700">
           <div className="space-y-1">
             <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">
@@ -233,6 +254,8 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
             {personalInfo.email && <div className="truncate">✉ {personalInfo.email}</div>}
             {personalInfo.phone && <div>📞 {personalInfo.phone}</div>}
             {personalInfo.location && <div>📍 {personalInfo.location}</div>}
+            {personalInfo.linkedin && <div className="truncate">🔗 LinkedIn</div>}
+            {personalInfo.github && <div className="truncate">💻 GitHub</div>}
           </div>
 
           {renderSection('skills')}
@@ -240,7 +263,7 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
           {renderSection('certifications')}
         </div>
 
-        {/* Main Right Content Panel */}
+        {/* Main Content Panel */}
         <div className="flex-1 p-8 space-y-5">
           {renderSection('summary')}
           {renderSection('experience')}
@@ -250,7 +273,7 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
     );
   }
 
-  // Header Banner Layout Variant
+  // Header Banner Variant
   if (schema.layout === 'header-banner') {
     return (
       <div
@@ -279,7 +302,7 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
     );
   }
 
-  // Standard Single Column Layout Variant
+  // Standard Single Column / Compact / Editorial / Timeline / Academic Layout Variants
   return (
     <div
       className={cn('print-container bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xl rounded-sm overflow-hidden border border-slate-200 dark:border-slate-800 transition-transform duration-200 min-h-[297mm]', className)}
@@ -316,6 +339,18 @@ export const ResumeRenderer: React.FC<ResumeRendererProps> = ({
               <span className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" style={{ color: accentColor }} />
                 {personalInfo.location}
+              </span>
+            )}
+            {personalInfo.linkedin && (
+              <span className="flex items-center gap-1">
+                <Linkedin className="w-3 h-3" style={{ color: accentColor }} />
+                LinkedIn
+              </span>
+            )}
+            {personalInfo.github && (
+              <span className="flex items-center gap-1">
+                <Github className="w-3 h-3" style={{ color: accentColor }} />
+                GitHub
               </span>
             )}
           </div>

@@ -120,6 +120,21 @@ export function analyzeResumeATS(
     });
   }
 
+  // Check template guardrails
+  if (resume.templateId) {
+    const isSidebar = resume.templateId.includes('sidebar') || resume.templateId.includes('two-column');
+    if (isSidebar) {
+      formatScore -= 5;
+      linterWarnings.push({
+        id: 'warn-layout-sidebar',
+        type: 'info',
+        title: 'Two-Column / Sidebar Layout Risk',
+        description: 'Some legacy ATS parsers (e.g. Taleo) may parse single-column text more reliably than multi-column sidebars.',
+        recommendation: 'Use a single-column layout (e.g. Classic Chronological) if applying to legacy enterprise portals.',
+      });
+    }
+  }
+
   const experienceScore = resume.experience && resume.experience.length >= 2 ? 95 : 75;
   const formatParseabilityScore = Math.max(50, formatScore);
 
