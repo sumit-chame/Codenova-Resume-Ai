@@ -161,7 +161,7 @@ export const JobFitPage: React.FC = () => {
                   <h3 className="text-lg font-bold text-slate-100">{jobFit.company} — {jobFit.role}</h3>
                   <p className="text-xs text-slate-400">Seniority: {jobFit.seniorityLevel}</p>
                 </div>
-                <Badge variant="success" size="lg">Fit Score: 88%</Badge>
+                <Badge variant="success" size="md">Fit Score: 88%</Badge>
               </div>
 
               <div className="space-y-3">
@@ -185,7 +185,7 @@ export const JobFitPage: React.FC = () => {
                             ? 'success'
                             : req.evidenceStatus === 'transferable'
                             ? 'warning'
-                            : 'error'
+                            : 'danger'
                         }
                       >
                         {req.evidenceStatus}

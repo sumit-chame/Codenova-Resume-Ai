@@ -260,6 +260,7 @@ export function generateInterviewKit(jobDesc: JobDescription): InterviewKit {
       question: 'What questions do you have for our engineering leadership team?',
       type: 'candidate-question',
       difficulty: 'introductory',
+      suggestedEvidenceIds: [],
       sampleAnswer: 'What are the top architectural priorities for your infrastructure over the next 12 months?',
     },
   ];
