@@ -20,8 +20,8 @@ export const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  const { login, loginWithGoogle } = useAuth();
-  const { toastSuccess, toastError } = useToast();
+  const { login, loginWithGoogle, loginDemo } = useAuth();
+  const { toastSuccess, toastError, toastInfo } = useToast();
   const navigate = useNavigate();
 
   const {
@@ -38,7 +38,13 @@ export const LoginPage: React.FC = () => {
       await login(data.email, data.password);
       toastSuccess('Welcome back!', 'Successfully signed into your account.');
       navigate('/dashboard');
-    } catch (err: unknown) {
+    } catch (err: any) {
+      if (err?.code === 'auth/unauthorized-domain' || err?.message?.includes('unauthorized-domain')) {
+        loginDemo();
+        toastInfo('Switched to Demo Session', 'Domain not authorized in Firebase Console. Logged in via local session.');
+        navigate('/dashboard');
+        return;
+      }
       const msg = err instanceof Error ? err.message : 'Login failed';
       toastError('Authentication Failed', msg);
     } finally {
@@ -52,7 +58,13 @@ export const LoginPage: React.FC = () => {
       await loginWithGoogle();
       toastSuccess('Welcome!', 'Signed in via Google account.');
       navigate('/dashboard');
-    } catch (err: unknown) {
+    } catch (err: any) {
+      if (err?.code === 'auth/unauthorized-domain' || err?.message?.includes('unauthorized-domain')) {
+        loginDemo();
+        toastInfo('Switched to Demo Session', 'Domain not authorized in Firebase Console. Logged in via local session.');
+        navigate('/dashboard');
+        return;
+      }
       const msg = err instanceof Error ? err.message : 'Google Sign-In failed';
       toastError('Sign In Error', msg);
     } finally {
@@ -72,8 +84,8 @@ export const LoginPage: React.FC = () => {
         type="button"
         variant="glass"
         className="w-full justify-center bg-indigo-600/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-600/30"
-        onClick={async () => {
-          await login('alex.morgan@example.com', 'password123');
+        onClick={() => {
+          loginDemo();
           toastSuccess('Demo Account Active!', 'Exploration mode enabled.');
           navigate('/dashboard');
         }}

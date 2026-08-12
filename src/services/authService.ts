@@ -146,18 +146,35 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 /**
+ * Explicitly logs in as Demo User for instant local testing when Firebase domain isn't authorized
+ */
+export function loginAsDemoUser() {
+  const demo = getDemoUser();
+  localStorage.setItem(DEMO_USER_KEY, JSON.stringify(demo));
+  return demo;
+}
+
+/**
  * Logs in or registers user via Google OAuth popup
  */
 export async function loginWithGoogle() {
   if (!isFirebaseConfigured) {
-    const demo = getDemoUser();
-    localStorage.setItem(DEMO_USER_KEY, JSON.stringify(demo));
-    return demo;
+    return loginAsDemoUser();
   }
 
-  const userCredential = await signInWithPopup(auth, googleProvider);
-  const profile = await syncUserProfile(userCredential.user);
-  return { user: userCredential.user, profile };
+  try {
+    const userCredential = await signInWithPopup(auth, googleProvider);
+    const profile = await syncUserProfile(userCredential.user);
+    return { user: userCredential.user, profile };
+  } catch (err: any) {
+    if (err?.code === 'auth/unauthorized-domain') {
+      console.warn('[authService] Domain not authorized in Firebase Console. Falling back to local session.');
+      throw new Error(
+        'Firebase Unauthorized Domain (auth/unauthorized-domain). To fix: Add "localhost" & "127.0.0.1" in Firebase Console > Authentication > Settings > Authorized domains. Or click "Continue in Demo Mode".'
+      );
+    }
+    throw err;
+  }
 }
 
 /**

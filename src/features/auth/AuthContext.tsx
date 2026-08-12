@@ -12,6 +12,7 @@ import {
   syncUserProfile,
   updateUserProfileDetails,
   getDemoUser,
+  loginAsDemoUser,
 } from '../../services/authService';
 
 interface AuthContextType {
@@ -22,6 +23,7 @@ interface AuthContextType {
   login: (email: string, pass: string) => Promise<void>;
   signup: (email: string, pass: string, fullName: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  loginDemo: () => void;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   resendVerification: () => Promise<void>;
@@ -110,6 +112,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginDemo = () => {
+    setError(null);
+    const demo = loginAsDemoUser();
+    setCurrentUser(demo.user);
+    setUserProfile(demo.profile);
+  };
+
   const logout = async () => {
     setError(null);
     try {
@@ -172,6 +181,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         signup,
         loginWithGoogle,
+        loginDemo,
         logout,
         resetPassword,
         resendVerification,

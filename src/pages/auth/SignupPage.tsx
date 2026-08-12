@@ -27,8 +27,8 @@ export const SignupPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  const { signup, loginWithGoogle } = useAuth();
-  const { toastSuccess, toastError } = useToast();
+  const { signup, loginWithGoogle, loginDemo } = useAuth();
+  const { toastSuccess, toastError, toastInfo } = useToast();
   const navigate = useNavigate();
 
   const {
@@ -43,9 +43,15 @@ export const SignupPage: React.FC = () => {
     setIsLoading(true);
     try {
       await signup(data.email, data.password, data.fullName);
-      toastSuccess('Account Created!', 'Welcome to ResumeForge AI. Check your inbox for email verification.');
+      toastSuccess('Account Created!', 'Welcome to ResumeForge AI.');
       navigate('/dashboard');
-    } catch (err: unknown) {
+    } catch (err: any) {
+      if (err?.code === 'auth/unauthorized-domain' || err?.message?.includes('unauthorized-domain')) {
+        loginDemo();
+        toastInfo('Switched to Demo Session', 'Domain not authorized in Firebase Console. Logged in via local session.');
+        navigate('/dashboard');
+        return;
+      }
       const msg = err instanceof Error ? err.message : 'Registration failed';
       toastError('Signup Error', msg);
     } finally {
@@ -59,9 +65,15 @@ export const SignupPage: React.FC = () => {
       await loginWithGoogle();
       toastSuccess('Welcome!', 'Signed up with Google account.');
       navigate('/dashboard');
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Google Sign-In failed';
-      toastError('Sign Up Error', msg);
+    } catch (err: any) {
+      if (err?.code === 'auth/unauthorized-domain' || err?.message?.includes('unauthorized-domain')) {
+        loginDemo();
+        toastInfo('Switched to Demo Session', 'Domain not authorized in Firebase Console. Logged in via local session.');
+        navigate('/dashboard');
+        return;
+      }
+      const msg = err instanceof Error ? err.message : 'Google sign in failed';
+      toastError('Signup Error', msg);
     } finally {
       setIsGoogleLoading(false);
     }
