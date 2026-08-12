@@ -12,6 +12,7 @@ import {
   Layout,
   Briefcase,
   QrCode,
+  Key,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext';
 import { getUserResumes } from '../services/resumeService';
@@ -23,6 +24,8 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { Loader } from '../components/ui/Loader';
 import { FirstResumeChecklist } from '../components/student/FirstResumeChecklist';
 import { QrShareModal } from '../components/student/QrShareModal';
+import { GeminiKeyModal } from '../components/ai/GeminiKeyModal';
+import { getGeminiApiKey } from '../services/aiService';
 
 export const DashboardPage: React.FC = () => {
   const { currentUser, userProfile } = useAuth();
@@ -31,6 +34,8 @@ export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [resumes, setResumes] = useState<ResumeData[]>([]);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
+  const hasGeminiKey = !!getGeminiApiKey();
 
   useEffect(() => {
     async function loadDashboardResumes() {
@@ -58,23 +63,28 @@ export const DashboardPage: React.FC = () => {
       : 94;
 
   return (
-    <div className="space-y-8 pb-10">
-      {/* Welcome Banner */}
+    <div className="space-y-8 pb-12">
+      {/* Top Welcome Banner */}
       <div className="relative rounded-3xl p-6 sm:p-8 glass-panel border border-indigo-500/30 overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-indigo-600/20 via-purple-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
-              RESUMEFORGE AI 2.0 ACTIVE
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">
+                Welcome back,{' '}
+                <span className="text-gradient">
+                  {userProfile?.displayName || currentUser?.displayName || 'Professional'}
+                </span>
+              </h1>
+              <button
+                onClick={() => setIsKeyModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 hover:bg-indigo-500/20 transition-all cursor-pointer"
+              >
+                <Key className="w-3.5 h-3.5 text-indigo-400" />
+                <span>{hasGeminiKey ? '⚡ Gemini API Live' : '⚙️ Setup Gemini Key'}</span>
+              </button>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">
-              Welcome back,{' '}
-              <span className="text-gradient">
-                {userProfile?.displayName || currentUser?.displayName || 'Professional'}
-              </span>
-            </h1>
             <p className="text-xs sm:text-sm text-slate-400 max-w-xl">
               Build ATS-optimized resumes, scan job postings, and track applications across pipeline stages.
             </p>
@@ -336,6 +346,12 @@ export const DashboardPage: React.FC = () => {
           userName={userProfile?.displayName || currentUser?.displayName || 'Student'}
         />
       )}
+
+      {/* Gemini Key Config Modal */}
+      <GeminiKeyModal
+        isOpen={isKeyModalOpen}
+        onClose={() => setIsKeyModalOpen(false)}
+      />
     </div>
   );
 };
